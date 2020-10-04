@@ -7,9 +7,9 @@ module.exports = {
   port: process.env.PG_PORT || 5432,
   synchronize: false,
   logging: true,
-  entities: [__dirname + "/src/**/entities/*.entity.ts", __dirname + "/dist/**/entities/*.entity.js"],
-  migrations: ["migrations/*.ts"],
-  subscribers: ["/src/**/subscriber/*.ts", "dist/**/subscriber/*.js"],
+  entities: ["src/**/entities/*.entity.js", "dist/**/entities/*.entity.js"],
+  migrations: ["src/**/migrations/*.ts", "dist/**/migrations/*.ts"],
+  subscribers: ["src/**/subscriber/*.ts", "dist/**/subscriber/*.js"],
   cli: {
     "entitiesDir": "src/db/entities",
     "migrationsDir": "src/db/migrations",

@@ -14,9 +14,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         password: configService.get<string>('PG_PASS'),
         host: configService.get<string>('PG_HOST'),
         port: (configService.get<number>('PG_PORT')) || 5432,
-        synchronize: false,
+        synchronize: true,
         logging: true,
-        entities: ["src/**/entities/*.entity.js", "dist/**/entities/*.entity.js"],
+        entities: ["dist/**/entities/*.entity.js"],
+        migrations: ["dist/**/migrations/*.js"],
       })
     }),
   ],
