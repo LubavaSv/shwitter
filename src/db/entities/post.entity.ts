@@ -14,7 +14,7 @@ import { HashtagEntity } from './hashtag.entity';
 @Entity('Post')
 export class PostEntity {
   @PrimaryGeneratedColumn()
-  id?: number;
+  id: number;
 
   @Column({type: 'varchar', nullable: false})
   text: string;
@@ -23,7 +23,7 @@ export class PostEntity {
   image?: Buffer;
 
   @CreateDateColumn({type: 'timestamp', nullable: false})
-  createdAt?: Date;
+  createdAt: Date;
 
   @ManyToOne(type => UserEntity, { onDelete: 'CASCADE' })
   @JoinColumn({name: 'user_id', referencedColumnName: 'id'})

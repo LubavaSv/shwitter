@@ -12,7 +12,7 @@ export class CommentEntity {
   text: string;
 
   @Column({type: 'bytea', nullable: true})
-  image: Buffer;
+  image?: Buffer;
 
   @Column({type: 'timestamp', nullable: false})
   date: Date;
