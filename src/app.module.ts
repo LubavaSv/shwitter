@@ -9,6 +9,7 @@ import { PostsModule } from './posts/posts.module';
 import { AuthModule } from './auth/auth.module';
 import { AuthService } from './auth/auth.service';
 import { UsersService } from './users/users.service';
+import { HashtagsModule } from './hashtags/hashtags.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { UsersService } from './users/users.service';
     PostsModule,
     CommentsModule,
     AuthModule,
+    HashtagsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
