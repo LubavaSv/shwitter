@@ -9,6 +9,6 @@ export class PostsController {
   @Post()
   @UseGuards(JwtAuthenticationGuard)
   async createPost(@Request() req, @Body() postData: PostDataDto) {
-    await this.postsService.create(postData, req.user.id);
+    await this.postsService.createPost(postData, req.user.id);
   }
 }

@@ -17,21 +17,13 @@ export class PostsService {
     private hashtagsService: HashtagsService,
   ) {}
 
-  async create(postData: PostDataDto, userId: number) {
-    const post: CreatePostDto = {
-      ...postData,
-      hashtags: await this.parseHashtags(postData.hashtags),
-    };
-    const postWithUser = await this.appendPostWithUser(post, userId);
-    await this.postsRepository.save(postWithUser);
-    return postWithUser;
-  }
-
   private async parseHashtags(HtStrings: string[]): Promise<HashtagEntity[]> {
     const hashtags: HashtagEntity[] = [];
-    for (let i = 0; i < HtStrings.length; i++) {
-      const ht = await this.hashtagsService.findHashtag(HtStrings[i]);
-      ht ? hashtags.push(ht) : hashtags.push(new HashtagEntity(ht));
+    if (HtStrings) {
+      for (let i = 0; i < HtStrings.length; i++) {
+        const ht = await this.hashtagsService.findHashtag(HtStrings[i]);
+        ht ? hashtags.push(ht) : hashtags.push(new HashtagEntity(ht));
+      }
     }
     return hashtags;
   }
@@ -40,6 +32,16 @@ export class PostsService {
     const user = await this.usersService.getUserById(userId);
     const postWithUser = await this.postsRepository.create(postData);
     postWithUser.user = user;
+    return postWithUser;
+  }
+
+  async createPost(postData: PostDataDto, userId: number): Promise<PostEntity> {
+    const post: CreatePostDto = {
+      ...postData,
+      hashtags: await this.parseHashtags(postData.hashtags),
+    };
+    const postWithUser = await this.appendPostWithUser(post, userId);
+    await this.postsRepository.save(postWithUser);
     return postWithUser;
   }
 }
