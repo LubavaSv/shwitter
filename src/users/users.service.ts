@@ -20,4 +20,8 @@ export class UsersService {
   async getUserByEmail(email: string): Promise<UserEntity> {
     return this.usersRepository.findOne({ email });
   }
+
+  async getUserById(id: number): Promise<UserEntity> {
+    return this.usersRepository.findOne(id);
+  }
 }
