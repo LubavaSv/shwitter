@@ -16,23 +16,23 @@ export class PostEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({type: 'varchar', nullable: false})
+  @Column({ type: 'varchar', nullable: false })
   text: string;
 
-  @Column({type: 'bytea', nullable: true})
-  image?: Buffer;
+  @Column({ type: 'varchar', nullable: true })
+  image?: string;
 
-  @CreateDateColumn({type: 'timestamp', nullable: false})
+  @CreateDateColumn({ type: 'timestamp', nullable: false })
   createdAt: Date;
 
   @ManyToOne(type => UserEntity, { onDelete: 'CASCADE' })
-  @JoinColumn({name: 'user_id', referencedColumnName: 'id'})
+  @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   user: UserEntity;
 
   @ManyToMany(type => HashtagEntity, {
-      cascade: true,
-      onDelete: 'CASCADE',
-    })
-  @JoinTable({name: 'post_hashtag'})
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
+  @JoinTable({ name: 'post_hashtag' })
   hashtags: HashtagEntity[];
 }
