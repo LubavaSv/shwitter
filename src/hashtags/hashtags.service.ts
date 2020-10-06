@@ -13,4 +13,16 @@ export class HashtagsService {
   async findHashtag(ht: string): Promise<HashtagEntity> {
     return this.hashtagRepository.findOne({ tag: ht });
   }
+  async findHashtagById(id: number): Promise<HashtagEntity> {
+    return this.hashtagRepository.findOne(id);
+  }
+  async findHashtagsByPostId(postId: number): Promise<HashtagEntity> {
+    return this.hashtagRepository.query(
+      'SELECT "Hashtag".*\n' +
+        'FROM "Hashtag"\n' +
+        'INNER JOIN post_hashtag ON post_hashtag."postId" = $1\n' +
+        'WHERE post_hashtag."hashtagId" = "Hashtag".ID',
+      [postId],
+    );
+  }
 }
