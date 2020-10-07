@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { AuthService } from './auth/auth.service';
 import { UsersService } from './users/users.service';
 import { HashtagsModule } from './hashtags/hashtags.module';
+import { HttpRedirMiddleware } from './http-redir.middleware';
 
 @Module({
   imports: [
@@ -24,4 +25,8 @@ import { HashtagsModule } from './hashtags/hashtags.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(HttpRedirMiddleware).forRoutes('*');
+  }
+}
