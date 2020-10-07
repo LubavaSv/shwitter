@@ -14,7 +14,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
-import JwtAuthenticationGuard from '../auth/jwt-auth.guard';
+import JwtAuthenticationGuard from '../auth/guards/jwt-auth.guard';
 import { PostDataDto } from './dto/postData.dto';
 import { QueryPostDto } from './dto/query.post.dto';
 import { UpdatePostDto } from './dto/update.post.dto';
