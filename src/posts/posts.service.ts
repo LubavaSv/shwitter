@@ -89,6 +89,7 @@ export class PostsService {
       .where({ id: postId })
       .innerJoin('post.user', 'user')
       .addSelect(['user.id', 'user.name'])
+      .leftJoinAndSelect('post.hashtags', 'hashtags')
       .getOne();
   }
 
