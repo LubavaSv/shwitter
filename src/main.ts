@@ -14,6 +14,9 @@ const httpsOptions = {
   cert: fs.readFileSync(__dirname + '/../certificate/cert.pem'),
 };
 
+const port = process.env.PORT || 3000;
+const securePort = process.env.SECURE_PORT || 443;
+
 async function bootstrap() {
   const server = express();
   const app = await NestFactory.create(AppModule, new ExpressAdapter(server));
@@ -21,9 +24,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   app.use(cookieParser());
   app.use(HttpRedirMiddleware);
-  http.createServer(server).listen(process.env.PORT || 3000);
-  https
-    .createServer(httpsOptions, server)
-    .listen(process.env.SECURE_PORT || 443);
+  http.createServer(server).listen(port);
+  https.createServer(httpsOptions, server).listen(securePort);
 }
 bootstrap();
