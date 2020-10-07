@@ -20,9 +20,9 @@ const securePort = process.env.SECURE_PORT || 443;
 async function bootstrap() {
   const server = express();
   const app = await NestFactory.create(AppModule, new ExpressAdapter(server));
+  app.use(cookieParser());
   await app.init();
   app.useGlobalPipes(new ValidationPipe());
-  app.use(cookieParser());
   app.use(HttpRedirMiddleware);
   http.createServer(server).listen(port);
   https.createServer(httpsOptions, server).listen(securePort);

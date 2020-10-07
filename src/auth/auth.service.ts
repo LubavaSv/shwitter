@@ -7,6 +7,10 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { TokenPayload } from './tokenPayload.interface';
 
+export enum Provider {
+  GOOGLE = 'google',
+}
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -38,11 +42,33 @@ export class AuthService {
     return match;
   }
 
-  getCookieWithJwtToken(userId: number) {
+  getJwtToken(userId: number): string {
     const payload: TokenPayload = { userId };
-    const token = this.jwtService.sign(payload);
+    return this.jwtService.sign(payload);
+  }
+
+  getCookie(token): string {
     return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
       'JWT_EXPIRATION_TIME',
     )}`;
+  }
+
+  /*  googleLoginCallback(req) {
+    if (!req.user) {
+      return 'No user from google';
+    }
+    return {
+      message: 'User information from google',
+      user: req.user.token,
+    };
+  }*/
+
+  async validateOAuthLogin(profile, provider: Provider) {
+    let user = await this.usersService.getUserByThirdPartyId(profile.id);
+    if (!user) {
+      user = await this.usersService.createUserFromOAuth(profile, provider);
+    }
+    const token = this.getJwtToken(user.id);
+    return { token };
   }
 }
