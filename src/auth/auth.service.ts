@@ -6,6 +6,8 @@ import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { TokenPayload } from './tokenPayload.interface';
+import { WrongCredentialsException } from './exceptions/wrongCredentials.exception';
+import { UniqueViolationException } from './exceptions/uniqueViolation.exception';
 
 export enum Provider {
   GOOGLE = 'google',
@@ -21,7 +23,15 @@ export class AuthService {
 
   async register(regData: RegUserDto): Promise<boolean> {
     regData.password = await bcrypt.hash(regData.password, 12);
-    const newUser = await this.usersService.createUser(regData);
+    let newUser;
+    try {
+      newUser = await this.usersService.createUser(regData);
+    } catch (e) {
+      // TODO: add enum for postgres error codes
+      if (e.code === '23505') {
+        throw new UniqueViolationException();
+      }
+    }
     return Boolean(newUser);
   }
 
@@ -31,7 +41,7 @@ export class AuthService {
       user && (await this.verifyPassword(candidatePw, user.password)),
     );
     if (isValid) return user;
-    else return null;
+    else throw new WrongCredentialsException();
   }
 
   private async verifyPassword(
@@ -52,16 +62,6 @@ export class AuthService {
       'JWT_EXPIRATION_TIME',
     )}`;
   }
-
-  /*  googleLoginCallback(req) {
-    if (!req.user) {
-      return 'No user from google';
-    }
-    return {
-      message: 'User information from google',
-      user: req.user.token,
-    };
-  }*/
 
   async validateOAuthLogin(profile, provider: Provider) {
     let user = await this.usersService.getUserByThirdPartyId(profile.id);

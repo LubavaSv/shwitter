@@ -10,6 +10,7 @@ import { CommentDataDto } from './dto/commentData.dto';
 import { QueryPostDto } from '../posts/dto/query.post.dto';
 import { UpdateCommentDto } from './dto/update.comment.dto';
 import { QueryCommentDto } from './dto/query.comment.dto';
+import { CommentNotFoundException } from './exceptions/CommentNotFound.exception';
 
 @Injectable()
 export class CommentsService {
@@ -97,7 +98,7 @@ export class CommentsService {
   }
 
   async getCommentById(id: number): Promise<CommentEntity> {
-    return this.commentsRepository
+    const comm = await this.commentsRepository
       .createQueryBuilder('comment')
       .where({ id })
       .innerJoin('comment.post', 'post')
@@ -106,10 +107,16 @@ export class CommentsService {
       .addSelect(['user.id', 'user.name'])
       .leftJoinAndSelect('comment.hashtags', 'hashtags')
       .getOne();
+    if (!comm) throw new CommentNotFoundException(id);
+    return comm;
   }
 
-  async deleteComment(id: number): Promise<DeleteResult> {
-    return this.commentsRepository.delete(id);
+  async deleteComment(id: number): Promise<boolean> {
+    const deleted = await this.commentsRepository.delete(id);
+    if (deleted.affected === 0) {
+      throw new CommentNotFoundException(id);
+    }
+    return true;
   }
 
   async updateComment(

@@ -14,6 +14,8 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 import { AuthService } from './auth.service';
 import { RegUserDto } from './dto/reg.user.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiBadRequestResponse, ApiBody } from '@nestjs/swagger';
+import { LoginUserDto } from './dto/login.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -21,15 +23,17 @@ export class AuthController {
 
   @HttpCode(200)
   @Post('register')
+  @ApiBadRequestResponse()
   async register(@Body() regData: RegUserDto, @Response() res) {
-    const registered = await this.authSevice.register(regData);
-    if (!registered) throw new BadRequestException();
+    await this.authSevice.register(regData);
     res.end();
   }
 
   @UseGuards(LocalAuthGuard)
   @HttpCode(200)
   @Post('/login')
+  @ApiBadRequestResponse()
+  @ApiBody({ type: LoginUserDto })
   login(@Request() req, @Response() res) {
     const { user } = req;
     const token = this.authSevice.getJwtToken(user.id);

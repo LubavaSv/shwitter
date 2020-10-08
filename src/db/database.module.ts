@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { NotNullViolation } from './exceptions/db.exceptions';
 
 @Module({
   imports: [
@@ -13,12 +14,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         username: configService.get<string>('PG_USER'),
         password: configService.get<string>('PG_PASS'),
         host: configService.get<string>('PG_HOST'),
-        port: (configService.get<number>('PG_PORT')) || 5432,
+        port: configService.get<number>('PG_PORT') || 5432,
         synchronize: true,
         logging: true,
-        entities: ["dist/**/entities/*.entity.js"],
-        migrations: ["dist/**/migrations/*.js"],
-      })
+        entities: ['dist/**/entities/*.entity.js'],
+        migrations: ['dist/**/migrations/*.js'],
+      }),
     }),
   ],
 })

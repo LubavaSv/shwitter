@@ -8,6 +8,7 @@ import { PostDataDto } from './dto/postData.dto';
 import { HashtagsService } from '../hashtags/hashtags.service';
 import { QueryPostDto } from './dto/query.post.dto';
 import { UpdatePostDto } from './dto/update.post.dto';
+import { PostNotFoundException } from './exceptions/postNotFound.exception';
 
 @Injectable()
 export class PostsService {
@@ -72,13 +73,15 @@ export class PostsService {
   }
 
   async getPostById(postId: number): Promise<PostEntity> {
-    return this.postsRepository
+    const post = await this.postsRepository
       .createQueryBuilder('post')
       .where({ id: postId })
       .innerJoin('post.user', 'user')
       .addSelect(['user.id', 'user.name'])
       .leftJoinAndSelect('post.hashtags', 'hashtags')
       .getOne();
+    if (!post) throw new PostNotFoundException(postId);
+    return post;
   }
 
   async deletePost(postId: number): Promise<DeleteResult> {

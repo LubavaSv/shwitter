@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PostEntity } from '../db/entities/post.entity';
 import { UsersModule } from '../users/users.module';
 import { HashtagsModule } from '../hashtags/hashtags.module';
+import { DatabaseModule } from '../db/database.module';
 
 @Module({
   imports: [

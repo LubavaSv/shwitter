@@ -14,6 +14,7 @@ import { diskStorage } from 'multer';
 import { editFileName, imageFileFilter } from './file.upload.utils';
 import JwtAuthenticationGuard from './auth/guards/jwt-auth.guard';
 import { root } from 'rxjs/internal-compatibility';
+import { ApiBody, ApiConsumes } from '@nestjs/swagger';
 
 @Controller()
 export class AppController {
@@ -25,9 +26,21 @@ export class AppController {
   }
 
   @Post('/images')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
   @UseGuards(JwtAuthenticationGuard)
   @UseInterceptors(
-    FileInterceptor('image', {
+    FileInterceptor('file', {
       storage: diskStorage({
         destination: './public/images',
         filename: editFileName,
@@ -40,7 +53,7 @@ export class AppController {
   }
 
   @Get('/images/:image')
-  getImage(@Param('image') image, @Res() res) {
+  getImage(@Param('image') image: string, @Res() res) {
     res.setHeader('Content-Type', 'image/jpeg');
     res.sendFile(image, { root: './public/images' });
   }
