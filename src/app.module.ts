@@ -7,8 +7,6 @@ import { DatabaseModule } from './db/database.module';
 import { CommentsModule } from './comments/comments.module';
 import { PostsModule } from './posts/posts.module';
 import { AuthModule } from './auth/auth.module';
-import { AuthService } from './auth/auth.service';
-import { UsersService } from './users/users.service';
 import { HashtagsModule } from './hashtags/hashtags.module';
 import { HttpRedirMiddleware } from './http-redir.middleware';
 
@@ -19,8 +17,8 @@ import { HttpRedirMiddleware } from './http-redir.middleware';
     UsersModule,
     PostsModule,
     CommentsModule,
-    AuthModule,
     HashtagsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

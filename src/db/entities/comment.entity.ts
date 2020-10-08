@@ -1,5 +1,6 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   JoinTable,
@@ -19,11 +20,11 @@ export class CommentEntity {
   @Column({ type: 'varchar', nullable: false })
   text: string;
 
-  @Column({ type: 'bytea', nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   image?: string;
 
-  @Column({ type: 'timestamp', nullable: false })
-  date: Date;
+  @CreateDateColumn({ type: 'timestamp', nullable: false })
+  createdAt: Date;
 
   @ManyToOne(type => PostEntity, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'post_id', referencedColumnName: 'id' })

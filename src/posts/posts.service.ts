@@ -5,7 +5,6 @@ import { DeleteResult, Repository } from 'typeorm';
 import { CreatePostDto } from './dto/create.post.dto';
 import { UsersService } from '../users/users.service';
 import { PostDataDto } from './dto/postData.dto';
-import { HashtagEntity } from '../db/entities/hashtag.entity';
 import { HashtagsService } from '../hashtags/hashtags.service';
 import { QueryPostDto } from './dto/query.post.dto';
 import { UpdatePostDto } from './dto/update.post.dto';
@@ -18,17 +17,6 @@ export class PostsService {
     private usersService: UsersService,
     private hashtagsService: HashtagsService,
   ) {}
-
-  private async parseHashtags(HtStrings: string[]): Promise<HashtagEntity[]> {
-    const hashtags: HashtagEntity[] = [];
-    if (HtStrings) {
-      for (let i = 0; i < HtStrings.length; i++) {
-        const ht = await this.hashtagsService.findHashtag(HtStrings[i]);
-        ht ? hashtags.push(ht) : hashtags.push(new HashtagEntity(HtStrings[i]));
-      }
-    }
-    return hashtags;
-  }
 
   private async appendPostWithUser(postData: CreatePostDto, userId: number) {
     const user = await this.usersService.getUserById(userId);
@@ -71,7 +59,7 @@ export class PostsService {
   async createPost(postData: PostDataDto, userId: number): Promise<PostEntity> {
     const post: CreatePostDto = {
       ...postData,
-      hashtags: await this.parseHashtags(postData.hashtags),
+      hashtags: await this.hashtagsService.parseHashtags(postData.hashtags),
     };
     const postWithUser = await this.appendPostWithUser(post, userId);
     await this.postsRepository.save(postWithUser);
@@ -94,15 +82,16 @@ export class PostsService {
   }
 
   async deletePost(postId: number): Promise<DeleteResult> {
-    const deleted = await this.postsRepository.delete({ id: postId });
-    return deleted;
+    return await this.postsRepository.delete({ id: postId });
   }
 
   async updatePost(id: number, updateRaw: UpdatePostDto): Promise<PostEntity> {
     const updatePrimary = { text: updateRaw.text, image: updateRaw.image };
     await this.postsRepository.update(id, updatePrimary);
     const post = await this.getPostById(id);
-    post.hashtags = await this.parseHashtags(updateRaw.hashtags);
+    post.hashtags = await this.hashtagsService.parseHashtags(
+      updateRaw.hashtags,
+    );
     await this.postsRepository.save(post);
     return this.getPostById(id);
   }

@@ -25,4 +25,14 @@ export class HashtagsService {
       [postId],
     );
   }
+  async parseHashtags(HtStrings: string[]): Promise<HashtagEntity[]> {
+    const hashtags: HashtagEntity[] = [];
+    if (HtStrings) {
+      for (let i = 0; i < HtStrings.length; i++) {
+        const ht = await this.findHashtag(HtStrings[i]);
+        ht ? hashtags.push(ht) : hashtags.push(new HashtagEntity(HtStrings[i]));
+      }
+    }
+    return hashtags;
+  }
 }
