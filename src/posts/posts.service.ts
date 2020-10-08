@@ -83,7 +83,7 @@ export class PostsService {
     return this.postsRepository.query(SQLQuery);
   }
 
-  async getPostById(postId: number) {
+  async getPostById(postId: number): Promise<PostEntity> {
     return this.postsRepository
       .createQueryBuilder('post')
       .where({ id: postId })
@@ -98,8 +98,12 @@ export class PostsService {
     return deleted;
   }
 
-  async updatePost(id: number, update: UpdatePostDto): Promise<PostEntity> {
-    await this.postsRepository.update(id, update);
+  async updatePost(id: number, updateRaw: UpdatePostDto): Promise<PostEntity> {
+    const updatePrimary = { text: updateRaw.text, image: updateRaw.image };
+    await this.postsRepository.update(id, updatePrimary);
+    const post = await this.getPostById(id);
+    post.hashtags = await this.parseHashtags(updateRaw.hashtags);
+    await this.postsRepository.save(post);
     return this.getPostById(id);
   }
 }
