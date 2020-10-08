@@ -9,10 +9,12 @@ import { PostsModule } from './posts/posts.module';
 import { AuthModule } from './auth/auth.module';
 import { HashtagsModule } from './hashtags/hashtags.module';
 import { HttpRedirMiddleware } from './http-redir.middleware';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    MulterModule.register({ dest: './public/images' }),
     DatabaseModule,
     UsersModule,
     PostsModule,
