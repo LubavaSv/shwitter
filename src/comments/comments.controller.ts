@@ -6,6 +6,7 @@ import {
   Get,
   NotFoundException,
   Param,
+  Patch,
   Post,
   Put,
   Query,
@@ -42,8 +43,7 @@ export class CommentsController {
 
   @Get('/:id')
   async getCommentById(@Param() param) {
-    const c = await this.commentsService.getCommentById(param.id);
-    return c;
+    return await this.commentsService.getCommentById(param.id);
   }
 
   @Delete('/:id')
@@ -55,7 +55,7 @@ export class CommentsController {
     return this.commentsService.deleteComment(param.id);
   }
 
-  @Put('/:id')
+  @Patch('/:id')
   @UseGuards(JwtAuthenticationGuard)
   async updatePost(
     @Param() param,

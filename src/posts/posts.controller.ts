@@ -12,6 +12,7 @@ import {
   ForbiddenException,
   Put,
   NotFoundException,
+  Patch,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import JwtAuthenticationGuard from '../auth/guards/jwt-auth.guard';
@@ -48,7 +49,7 @@ export class PostsController {
     return this.postsService.deletePost(param.id);
   }
 
-  @Put('/:id')
+  @Patch('/:id')
   @UseGuards(JwtAuthenticationGuard)
   async updatePost(
     @Param() param,
