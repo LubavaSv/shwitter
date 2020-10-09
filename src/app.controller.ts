@@ -11,7 +11,7 @@ import {
 import { AppService } from './app.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { editFileName, imageFileFilter } from './file.upload.utils';
+import { editFileName, imageFileFilter } from './utils/file.upload.utils';
 import JwtAuthenticationGuard from './auth/guards/jwt-auth.guard';
 import { root } from 'rxjs/internal-compatibility';
 import { ApiBody, ApiConsumes } from '@nestjs/swagger';

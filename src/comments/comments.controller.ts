@@ -47,7 +47,6 @@ export class CommentsController {
   }
 
   @Get()
-  @ApiQuery(QueryCommentDto)
   @ApiBadRequestResponse()
   async getComments(
     @Param('postId') postId: number,

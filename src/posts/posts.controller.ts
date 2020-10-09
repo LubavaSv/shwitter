@@ -45,7 +45,6 @@ export class PostsController {
   }
 
   @Get()
-  @ApiQuery(QueryPostDto)
   @ApiBadRequestResponse()
   async getPosts(@Query() queryObj: QueryPostDto) {
     return this.postsService.getPosts(queryObj);
